@@ -1,7 +1,14 @@
-FROM python:3
+FROM python:3.8-slim-buster
 
-COPY *.py /
+COPY requirements.txt /tmp/
+COPY install-packages.sh /tmp/
+RUN /tmp/install-packages.sh
 
-RUN pip install telethon cryptg
+RUN useradd --create-home bot
+WORKDIR /home/bot
+USER bot
+
+COPY sessionManager.py .
+COPY telegram-download-daemon.py .
 
 CMD [ "python", "./telegram-download-daemon.py" ]
